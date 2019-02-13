@@ -1,4 +1,4 @@
-# Serverless: AWS Lambda to auto update security groups with Cloudfront IPs
+# Serverless: Auto update security groups with Cloudfront IPs
 
 ![servrless](https://github.com/abiydv/ref-docs/blob/master/images/logos/serverless_small.png)
 ![py](https://github.com/abiydv/ref-docs/blob/master/images/logos/python_small.png)
@@ -64,7 +64,7 @@ serverless deploy -f updatesg --stage dev
 serverless remove -v --stage dev
 ```
 
-## Contact
+## CONTACT
 
 Drop me a note or open an issue if something doesn't work out.
 
