@@ -1,4 +1,4 @@
-# Serverless: AWS Lambda to rollback AWS ECS deployment
+# Serverless: AWS Lambda to auto update security groups with Cloudfront IPs
 [![CodeFactor](https://www.codefactor.io/repository/github/abiydv/serverless-aws-lambda-ecs-rollback/badge)](https://www.codefactor.io/repository/github/abiydv/serverless-aws-lambda-ecs-rollback)
 
 ![servrless](https://github.com/abiydv/ref-docs/blob/master/images/logos/serverless_small.png)
