@@ -7,12 +7,12 @@
 
 Serverless framework example to deploy AWS Lambda, which auto updates security groups with Cloudfront IPs. Lambda runtime used - python 3.7
 
-:warning: This stack should only be created in `us-east-1`. In any other region, the lambda will not be able to subscribe to the AWS public topic.
+:warning: *This stack should only be created in `us-east-1`. In any other region, the lambda will not be able to subscribe to the AWS public topic.*
 
 ## A FEW WORDS
-The AWS example lambda [here](https://github.com/aws-samples/aws-cloudfront-samples/tree/master/update_security_groups_lambda) will work only if you create the stack in us-east-1 as well as have security groups which are in us-east-1.  
-I have modified their function to work with security groups in other regions as well.  
-The entire stack will exist in us-east-1 only while it will operate on security groups in other regions as well.  
+The AWS example lambda [here](https://github.com/aws-samples/aws-cloudfront-samples/tree/master/update_security_groups_lambda) will work only if you create the stack in `us-east-1` as well as have security groups which are in `us-east-1`.  
+I have modified their function to work with security groups in other regions.  
+The entire stack will exist in `us-east-1` only while it will operate on security groups in other regions as well.  
 Be careful about the region selection. Specify the security group region in the [config-dev](./config-dev.json) file
 
 ## BEFORE YOU BEGIN
@@ -20,48 +20,49 @@ Be careful about the region selection. Specify the security group region in the 
 Install serverless, follow this [guide](https://serverless.com/framework/docs/providers/aws/guide/installation/)
   
 #### 2. AWS Cli
-Setup aws cli with profiles matching environments/stages. A sample `~/.aws/credentials` file - 
+Setup aws cli with profiles matching environments/stages. A sample `~/.aws/credentials` file entry for `dev` profile - 
 ```
 [dev]
 aws_access_key_id = DEV_ACCESS_KEY
 aws_secret_access_key = DEV_SECRET_KEY
-[qa]
-aws_access_key_id = QA_ACCESS_KEY
-aws_secret_access_key = QA_SECRET_KEY
-[prod]
-aws_access_key_id = PROD_ACCESS_KEY
-aws_secret_access_key = PROD_SECRET_KEY
 ```
 
 ## USAGE
-#### 1. Deploy the service 
-Deploy the service with `--stage dev` argument to create the **dev** stack. Use **qa** or **prod** to launch function in other environments. <br><br>
+#### 1. Deploy the app 
+Deploy the app with `-s dev` argument to create the **dev** stack. Change `-s dev` to `-s qa` or `-s prod` to launch in Use **qa** or **prod** environments.  
 ***NOTE**: Create `config-qa.json` and `config-prod.json` with the respective AWS Account Id info.*
 ```
-serverless deploy -v --stage dev --aws-region us-east-1 
+sls deploy -v -s dev 
 ```
-#### 2. Invoking the lambda function
-First, create the lambda test event using the sample [event](./event.json) file. Next, execute the function. On first execution you will receive an error, like - 
+#### 2. Invoke the Lambda
+
+Once the stack is deployed, execute your lambda with `event.json` as payload.
+```
+sls invoke -f updatesg -p event.json -s dev
+```
+
+If you get an error like - 
 ```
 [ERROR] Exception: MD5 Mismatch: got 2182bff9048fe44d4c1d9b37903fc632 expected 45be1ba64fe83acb7ef247bccbc45704
 ```
-Now, replace the MD5 in the test event and execute again, to populate the security groups.
+Replace the MD5 after got (2182....) in the `event.json` file and execute again. It should succeed now.
 ```
-serverless invoke -f updatesg -l --stage dev
+sls invoke -f updatesg -p event.json -s dev
 ```
-After the stack is created, this lambda will be auto-triggered everytime there is a change in any IP as reported by AWS, it need not be executed manually later.
 
-#### 3. Deploy only the lambda function after any change in lambda code. (Skip if no change)
-In case you need to deploy a change in the function code, you do not need to deploy the entire stack again. Use the following command to deploy only the lambda function
+From this point on, Lambda will be auto-triggered everytime there is a change in any IP as reported by AWS, it need not be executed manually later.
+
+#### 3. Deploy a code change to Lambda (Skip if no change)
+To deploy a new function code, you do not need to deploy the entire stack. Use the following command to deploy only the lambda function
  
 ```
-serverless deploy -f updatesg --stage dev
+sls deploy -f updatesg -s dev
 ```
 
 #### 4. Cleanup
 :rocket: Nuke the setup after you are done testing/looking.
 ```
-serverless remove -v --stage dev
+sls remove -v -s dev
 ```
 
 ## CONTACT
