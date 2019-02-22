@@ -16,57 +16,54 @@ The entire stack will exist in `us-east-1` only while it will operate on securit
 Be careful about the region selection. Specify the security group region in the [config-dev](./config-dev.json) file
 
 ## BEFORE YOU BEGIN
-#### 1. Serverless. 
-Install serverless, follow this [guide](https://serverless.com/framework/docs/providers/aws/guide/installation/)
+  #### 1. Serverless. 
+  Install serverless, follow this [guide](https://serverless.com/framework/docs/providers/aws/guide/installation/)
   
-#### 2. AWS Cli
-Setup aws cli with profiles matching environments/stages. A sample `~/.aws/credentials` file entry for `dev` profile - 
-```
-[dev]
-aws_access_key_id = DEV_ACCESS_KEY
-aws_secret_access_key = DEV_SECRET_KEY
-```
+  #### 2. AWS Cli
+  Setup aws cli with profiles matching environments/stages. A sample `~/.aws/credentials` file entry for `dev` profile - 
+  ```
+  [dev]
+  aws_access_key_id = DEV_ACCESS_KEY
+  aws_secret_access_key = DEV_SECRET_KEY
+  ```
 
 ## USAGE
-#### 1. Deploy the app 
-Deploy the app with `-s dev` argument to create the **dev** stack. Change `-s dev` to `-s qa` or `-s prod` to launch in Use **qa** or **prod** environments.  
-***NOTE**: Create `config-qa.json` and `config-prod.json` with the respective AWS Account Id info.*
-```
-sls deploy -v -s dev 
-```
-#### 2. Invoke the Lambda
+  #### 1. Deploy the app 
+  Deploy the app with `-s dev` argument to create the **dev** stack.   
+  ```
+  sls deploy -v -s dev 
+  ```  
+  :information_source: *Change `-s dev` to `-s qa` or `-s prod` to launch in Use **qa** or **prod** environments and also create `config-qa.json` and `config-prod.json` similar to `config-dev.json` with the respective AWS Account Id info.*  
+  
+  #### 2. Invoke the Lambda
+  Once the stack is deployed, execute your lambda with `event.json` as payload.
+  ```
+  sls invoke -f updatesg -p event.json -s dev
+  ```
+  If you get an error like - 
+  ```
+  [ERROR] Exception: MD5 Mismatch: got 2182bff9048fe44d4c1d9b37903fc632 
+  expected 45be1ba64fe83acb7ef247bccbc45704
+  ```
+  Replace the MD5 after got (2182....) in the `event.json` file and execute again. It should succeed now.
+  ```
+  sls invoke -f updatesg -p event.json -s dev
+  ```
+   From this point on, Lambda will be auto-triggered everytime there is a change in any IP as reported by AWS, it need not be executed manually later.
 
-Once the stack is deployed, execute your lambda with `event.json` as payload.
-```
-sls invoke -f updatesg -p event.json -s dev
-```
+  #### 3. Deploy a code change to Lambda (Skip if no change)
+  To deploy a new function code, you do not need to deploy the entire stack. Use the following command to deploy only the lambda function
+  ```
+  sls deploy -f updatesg -s dev
+  ```
 
-If you get an error like - 
-```
-[ERROR] Exception: MD5 Mismatch: got 2182bff9048fe44d4c1d9b37903fc632 expected 45be1ba64fe83acb7ef247bccbc45704
-```
-Replace the MD5 after got (2182....) in the `event.json` file and execute again. It should succeed now.
-```
-sls invoke -f updatesg -p event.json -s dev
-```
-
-From this point on, Lambda will be auto-triggered everytime there is a change in any IP as reported by AWS, it need not be executed manually later.
-
-#### 3. Deploy a code change to Lambda (Skip if no change)
-To deploy a new function code, you do not need to deploy the entire stack. Use the following command to deploy only the lambda function
- 
-```
-sls deploy -f updatesg -s dev
-```
-
-#### 4. Cleanup
-:rocket: Nuke the setup after you are done testing/looking.
-```
-sls remove -v -s dev
-```
+  #### 4. Cleanup
+  :rocket: Nuke the setup after you are done testing/looking.
+  ```
+  sls remove -v -s dev
+  ```
 
 ## CONTACT
-
 Drop me a note or open an issue if something doesn't work out.
 
 Cheers! :thumbsup:
