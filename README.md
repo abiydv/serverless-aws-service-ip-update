@@ -40,7 +40,7 @@ Be careful about the region selection. Specify the security group region in the 
   ```
   sls invoke -f updatesg -p event.json -s dev
   ```
-  If you get an error like - 
+  :no_entry_sign: If you get an error like - 
   ```
   [ERROR] Exception: MD5 Mismatch: got 2182bff9048fe44d4c1d9b37903fc632 
   expected 45be1ba64fe83acb7ef247bccbc45704
@@ -66,4 +66,4 @@ Be careful about the region selection. Specify the security group region in the 
 ## CONTACT
 Drop me a note or open an issue if something doesn't work out.
 
-Cheers! :thumbsup:
+Cheers! :+1:
